@@ -62,8 +62,7 @@ argocd-application-controller-0                     1/1     Running   0         
 argocd-server-7459448d56-xnrvf                      1/1     Running   0          3m40s
 argocd-repo-server-7b75b45897-qsw9z                 1/1     Running   0          3m41s
 ```
-3. Отримаємо доступ до інтерфейсу ArgoCD GUI
-[Отримати доступ](https://argo-cd.readthedocs.io/en/stable/getting_started/#3-access-the-argo-cd-api-server) можна в два шляхи:
+3. Отримаємо доступ до інтерфейсу ArgoCD GUI [Отримати доступ](https://argo-cd.readthedocs.io/en/stable/getting_started/#3-access-the-argo-cd-api-server) можна в два шляхи:
 - Service Type Load Balancer
 - Ingress
 - Port Forwarding
@@ -76,15 +75,15 @@ Forwarding from 127.0.0.1:8080 -> 8080
 Forwarding from [::1]:8080 -> 8080
 Handling connection for 8080
 ```
-ArgoCD за замовчуванням працює з https тому при спробі відкрити [127.0.0.1:8080](https://127.0.0.1:8080/) ми отримаємо помилку сертифікати. Отже в продуктивній системі потрібно встановлювати сертифікати та налаштовувати ці моменти.
+ArgoCD за замовчуванням працює з https тому при спробі відкрити [127.0.0.1:8080](http://127.0.0.1:8080/) ми отримаємо помилку сертифікати. Отже в продуктивній системі потрібно встановлювати сертифікати та налаштовувати ці моменти.
 
 4. Отримання паролю
 Використаємо команду для отримання паролю, вкажемо файл сікрету `argocd-initial-admin-secret` а також формат  виводу `jsonpath="{.data.password}"`. Це поверне нам base64 закодований пароль, після чого використаємо команду `base64 -d` для повернення паролю в простий текст. Отриманий пароль та логін `admin` вводимо в Web-інтерфейс ArgoCD
 ```bash
 $ k -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"
-cFZIWTM3eFpJR3hDeUxLNQ==#
+d2tyT3o2WWwxYWswQ2dYeg==%
 $ k -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"|base64 -d;echo
-pVHY37xZIGxCyLK5
+wkrOz6Yl1ak0CgXz
 ```
 5. Створимо додаток за допомогою графічного інтерфейсу.
 Тепер налаштовані в ArgoCD додатки будуть автоматично встановлюватись на оновлятись в Kubernetes.
@@ -94,7 +93,7 @@ pVHY37xZIGxCyLK5
 - Тип синхронізації залишаємо `Manual`
 ![+ NEW APP](img/agro_newapp.png)
 - У розділі `SOURCE` тип джерела залишаємо за замовчуванням `GIT`
-- Введемо `url` репозиторію, який містить маніфести для розгортання https://github.com/vit-um/go-demo-app  (це буде helm charts, або пакет маніфестів який являє собою групу об'єктів для Kubernetes та нашого додатку)
+- Введемо `url` репозиторію, який містить маніфести для розгортання https://github.com/tabulat/go-demo-app.git  (це буде helm charts, або пакет маніфестів який являє собою групу об'єктів для Kubernetes та нашого додатку)
 - У полі `Path` введемо шлях до каталогу `helm`
 ![helm](img/argo_helm.png)
 - В розділі `DESTINATION` вкажемо `url` локального кластеру та `Namespace` demo після чого ArgoCD автоматично визначить параметри додатку використавши маніфести, які знаходяться в репозиторії. В разі бажання змінити значення вручну можна змінити іх значення в розділі `PARAMETERS`.
